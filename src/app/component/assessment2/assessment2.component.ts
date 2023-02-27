@@ -18,8 +18,8 @@ export class Assessment2Component implements OnInit {
   userDetailsForm!: FormGroup;
   dataSource: any;
 
-  validationMessages = {
-    name: [
+  validationMessages: any = {
+    'name': [
       { type: 'required', message: 'Username is required' },
       {
         type: 'minlength',
@@ -34,7 +34,7 @@ export class Assessment2Component implements OnInit {
         message: 'Your username must contain only numbers and letters',
       },
     ],
-    email: [
+    'email': [
       { type: 'required', message: 'Email is required' },
       { type: 'pattern', message: 'Enter a valid mail' },
     ],
@@ -55,7 +55,7 @@ export class Assessment2Component implements OnInit {
         Validators.compose([
           Validators.maxLength(25),
           Validators.minLength(5),
-          // Validators.pattern('^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z]+$'),
+          Validators.pattern('^[a-zA-Z\s]+$'),
           Validators.required,
         ])
       ),
@@ -64,10 +64,22 @@ export class Assessment2Component implements OnInit {
         '',
         Validators.compose([
           Validators.required,
-          Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$'),
+          Validators.pattern('^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'),
         ])
       ),
     });
+  }
+
+  getValidationMessage(field: string) {
+    let message = '';
+    this.validationMessages[field].forEach((validation: any) => {
+      if (this.userDetailsForm.controls[field].hasError(validation.type) &&
+        (this.userDetailsForm.controls[field].dirty ||
+          this.userDetailsForm.controls[field].touched)) {
+            message = validation.message + ' ';
+      }
+    });
+    return message;
   }
 
   onSubmitDetails(requestData: User) {
