@@ -1,0 +1,49 @@
+<div class="content" role="main">
+    <div class="card-container">
+        <form [formGroup]="userDetailsForm" (ngSubmit)="onSubmitDetails(userDetailsForm.value)">
+            <mat-form-field class="full-width">
+                <input matInput maxlength="25" placeholder="Username" formControlName="name" required />
+                <mat-error *ngFor="let validation of validationMessages.name">
+                    <mat-error class="error-message" *ngIf="userDetailsForm.controls['name'].hasError(validation.type) &&
+                        (userDetailsForm.controls['name'].dirty ||
+                        userDetailsForm.controls['name'].touched)">{{ validation.message }}</mat-error>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+                <input matInput type="email" placeholder="Email" formControlName="email" required />
+                <mat-error *ngFor="let validation of validationMessages.email">
+                    <mat-error class="error-message" *ngIf="userDetailsForm.controls['email'].hasError(validation.type) &&
+                      (userDetailsForm.controls['email'].dirty ||
+                      userDetailsForm.controls['email'].touched)">{{ validation.message }}</mat-error>
+                </mat-error>
+            </mat-form-field>
+
+            <button class="submit-btn" color="primary" mat-raised-button type="submit"
+                [disabled]="!userDetailsForm.valid">
+                <!-- <svg class="material-icons" width="24" height="24" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M448.3,424.7L335,311.3c20.8-26,33.3-59.1,33.3-95.1c0-84.1-68.1-152.2-152-152.2c-84,0-152,68.2-152,152.2  s68.1,152.2,152,152.2c36.2,0,69.4-12.7,95.5-33.8L425,448L448.3,424.7z M120.1,312.6c-25.7-25.7-39.8-59.9-39.8-96.3  s14.2-70.6,39.8-96.3S180,80,216.3,80c36.3,0,70.5,14.2,96.2,39.9s39.8,59.9,39.8,96.3s-14.2,70.6-39.8,96.3  c-25.7,25.7-59.9,39.9-96.2,39.9C180,352.5,145.8,338.3,120.1,312.6z"/></svg> -->
+                <span>Search</span>
+            </button>
+
+        </form>
+    </div>
+    <div *ngIf="loading">loading...</div>
+    <div *ngIf="errorMessage" class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <strong>Warning!</strong> {{errorMessage}}
+    </div>
+    <br />
+    <div *ngIf="!responseData">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <strong>Warning!</strong> Data not Available...
+    </div>
+    <table *ngIf="responseData" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+            <th mat-header-cell *matHeaderCellDef>{{ column | uppercase }}</th>
+            <td mat-cell *matCellDef="let emp">{{ emp[column] }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let emprow; columns: displayedColumns"></tr>
+    </table>
+</div>
